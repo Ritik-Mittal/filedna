@@ -13,10 +13,10 @@
 
 *The Python file analysis library that trusts content, not extensions.*
 
-[![PyPI version](https://img.shields.io/badge/PyPI-v1.2.2-brightgreen)](https://pypi.org/project/filedna/)
+[![PyPI version](https://img.shields.io/badge/PyPI-v1.2.4-brightgreen)](https://pypi.org/project/filedna/)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-190%20passed-brightgreen)](tests/)
+[![Tests](https://img.shields.io/badge/tests-189%20passed-brightgreen)](tests/)
 [![Coverage](https://img.shields.io/badge/coverage-76%25-yellow)](tests/)
 [![Pure Python](https://img.shields.io/badge/pure%20python-no%20libmagic-blue)](pyproject.toml)
 
