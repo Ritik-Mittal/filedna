@@ -2,7 +2,7 @@
 FileDNA CLI.
 
 Usage:
-    filedna analyze <path> [--pretty] [--json] [--no-metadata]
+    filedna analyze <path> [--pretty] [--no-metadata]
     filedna validate <path>
     filedna type <path>
     filedna tokens <path>
@@ -16,10 +16,29 @@ import sys
 import click
 
 
+def _safe_echo(text: str, **kwargs) -> None:
+    """Echo text safely on all platforms including Windows cp1252 terminals."""
+    try:
+        click.echo(text, **kwargs)
+    except UnicodeEncodeError:
+        # Strip non-ASCII characters and retry
+        safe = text.encode("ascii", errors="replace").decode("ascii")
+        click.echo(safe, **kwargs)
+
+
+def _icon(valid: bool) -> str:
+    """Return ASCII-safe status icon."""
+    return "[OK]" if valid else "[FAIL]"
+
+
+def _warn_icon() -> str:
+    return "[WARN]"
+
+
 @click.group()
 @click.version_option(package_name="filedna")
 def cli() -> None:
-    """FileDNA – Discover a file's true identity."""
+    """FileDNA - Discover a file's true identity."""
 
 
 # ---------------------------------------------------------------------------
@@ -46,9 +65,9 @@ def _print_pretty(result) -> None:  # type: ignore[type-arg]
     from ..models.result import AnalysisResult
     r: AnalysisResult = result
 
-    icon = "✓" if r.valid else "✗"
+    icon = _icon(r.valid)
     color = "green" if r.valid else "red"
-    click.echo(click.style(f"{icon} {r.real_type.upper()}", fg=color, bold=True))
+    _safe_echo(click.style(f"{icon} {r.real_type.upper()}", fg=color, bold=True))
     click.echo()
 
     meta = r.metadata
@@ -63,7 +82,7 @@ def _print_pretty(result) -> None:  # type: ignore[type-arg]
     if "duration" in meta:
         click.echo(f"Duration:     {meta['duration']}s")
     if "width" in meta and "height" in meta:
-        click.echo(f"Dimensions:   {meta['width']}×{meta['height']}")
+        click.echo(f"Dimensions:   {meta['width']}x{meta['height']}")
     if "language" in meta:
         click.echo(f"Language:     {meta['language']}")
     if "contains_tables" in meta and meta["contains_tables"]:
@@ -88,12 +107,12 @@ def _print_pretty(result) -> None:  # type: ignore[type-arg]
     if r.warnings:
         click.echo()
         for w in r.warnings:
-            click.echo(click.style(f"⚠  {w}", fg="yellow"))
+            _safe_echo(click.style(f"{_warn_icon()}  {w}", fg="yellow"))
 
     if r.errors:
         click.echo()
         for e in r.errors:
-            click.echo(click.style(f"✗  {e}", fg="red"))
+            _safe_echo(click.style(f"{_icon(False)}  {e}", fg="red"))
 
 
 # ---------------------------------------------------------------------------
@@ -103,19 +122,19 @@ def _print_pretty(result) -> None:  # type: ignore[type-arg]
 @cli.command()
 @click.argument("path")
 def validate(path: str) -> None:
-    """Validate PATH and print result."""
+    """Validate PATH and print result. Exits 0 if valid, 1 if invalid."""
     from .. import validate as _validate
 
     result = _validate(path)
-    icon = "✓" if result.valid else "✗"
+    icon = _icon(result.valid)
     color = "green" if result.valid else "red"
-    click.echo(click.style(f"{icon} {result.real_type.upper()}", fg=color, bold=True))
+    _safe_echo(click.style(f"{icon} {result.real_type.upper()}", fg=color, bold=True))
     if result.errors:
         for e in result.errors:
-            click.echo(click.style(f"  ✗  {e}", fg="red"))
+            _safe_echo(click.style(f"  {_icon(False)}  {e}", fg="red"))
     if result.warnings:
         for w in result.warnings:
-            click.echo(click.style(f"  ⚠  {w}", fg="yellow"))
+            _safe_echo(click.style(f"  {_warn_icon()}  {w}", fg="yellow"))
     sys.exit(0 if result.valid else 1)
 
 
@@ -159,9 +178,9 @@ def url(url: str, pretty: bool) -> None:
     result = _inspect_url(url)
     if pretty:
         valid = result.get("valid", False)
-        icon = "✓" if valid else "✗"
+        icon = _icon(valid)
         color = "green" if valid else "red"
-        click.echo(click.style(f"{icon} {result.get('real_type', 'unknown').upper()}", fg=color, bold=True))
+        _safe_echo(click.style(f"{icon} {result.get('real_type', 'unknown').upper()}", fg=color, bold=True))
         click.echo(f"URL:    {result['url']}")
         click.echo(f"MIME:   {result.get('mime', 'unknown')}")
         if result.get("size_human"):
@@ -169,7 +188,7 @@ def url(url: str, pretty: bool) -> None:
         if result.get("status_code"):
             click.echo(f"HTTP:   {result['status_code']}")
         for e in result.get("errors", []):
-            click.echo(click.style(f"✗  {e}", fg="red"))
+            _safe_echo(click.style(f"{_icon(False)}  {e}", fg="red"))
     else:
         click.echo(json.dumps(result, indent=2, default=str))
 

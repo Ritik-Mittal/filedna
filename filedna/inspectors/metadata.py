@@ -42,48 +42,19 @@ def _estimate_tokens(text: str) -> int:
 
 
 # ---------------------------------------------------------------------------
-# Language detection — uses lingua (accurate, deterministic) over langdetect
+# Language detection — uses langdetect with fixed seed (deterministic, 3MB)
 # ---------------------------------------------------------------------------
-
-_lingua_detector = None
-
-def _get_lingua_detector():
-    """Build lingua detector once and cache it."""
-    global _lingua_detector
-    if _lingua_detector is None:
-        try:
-            from lingua import LanguageDetectorBuilder  # type: ignore
-            _lingua_detector = (
-                LanguageDetectorBuilder
-                .from_all_languages()
-                .with_low_accuracy_mode()
-                .build()
-            )
-        except Exception:
-            _lingua_detector = False  # mark as unavailable
-    return _lingua_detector if _lingua_detector else None
-
 
 def _detect_language(text: str) -> str:
     """Detect language of text. Returns ISO 639-1 code or 'unknown'."""
     if not text.strip():
         return "unknown"
-    # Try lingua first (accurate, deterministic, no random seed issues)
-    detector = _get_lingua_detector()
-    if detector is not None:
-        try:
-            lang = detector.detect_language_of(text[:5000])
-            if lang is not None:
-                return lang.iso_code_639_1.name.lower()
-        except Exception:
-            pass
-    # Fallback: langdetect (older, non-deterministic but widely available)
     try:
-        from langdetect import detect  # type: ignore
+        from langdetect import detect, DetectorFactory  # type: ignore
+        DetectorFactory.seed = 0   # makes results deterministic (same text = same result)
         return detect(text[:5000])
     except Exception:
-        pass
-    return "unknown"
+        return "unknown"
 
 
 # ---------------------------------------------------------------------------

@@ -45,7 +45,7 @@ from typing import Any
 
 from .models.result import AnalysisResult
 
-__version__ = "1.2.2"
+__version__ = "1.2.6"
 
 __all__ = [
     # Core

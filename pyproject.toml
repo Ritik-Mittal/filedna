@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "filedna"
-version = "1.2.4"
+version = "1.2.6"
 description = "Discover a file's true identity."
 readme = "README.md"
 license = { text = "MIT" }
@@ -35,7 +35,7 @@ dependencies = [
   "openpyxl>=3.1",
   "Pillow>=10.0",
   "mutagen>=1.47",
-  "lingua-language-detector>=2.0",
+  "langdetect>=1.0",
   "tiktoken>=0.5",
   "httpx>=0.27",
 ]
@@ -74,22 +74,22 @@ line-length = 100
 
 [tool.ruff.lint]
 select = [
-  "E",
-  "W",
-  "F",
-  "I",
-  "UP",
-  "B",
-  "C4",
-  "SIM",
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "SIM", # flake8-simplify
 ]
 ignore = [
-  "E501",
-  "B006",
+  "E501",  # line length handled by formatter
+  "B006",  # mutable default args — handled by dataclass field()
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"]
+"tests/*" = ["S101"]  # allow assert in tests
 
 [tool.mypy]
 python_version = "3.10"
