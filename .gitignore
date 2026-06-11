@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+filedna/lib/
+filedna/Scripts/
+filedna/pyvenv.cfg
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Linting
+.ruff_cache/
+.mypy_cache/
+
+# Personal test files
+test_ai.py
+test_ai_blackbox.py
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
