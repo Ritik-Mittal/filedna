@@ -1,3 +1,4 @@
+<!-- google-site-verification: qPbA-2CBh6ZIKsCI8saEbL44RMe-NNgHU-QtbhVGzqA -->
 <div align="center">
 
 ```
@@ -718,12 +719,12 @@ Contributions are welcome. Please open an issue first to discuss what you want t
 ## 📄 License
 
 MIT — see [LICENSE](LICENSE).
-<!-- google-site-verification: qPbA-2CBh6ZIKsCI8saEbL44RMe-NNgHU-QtbhVGzqA -->
+
 ---
 
 <div align="center">
 
-**FileDNA** · [PyPI](https://pypi.org/project/filedna/) · [Issues](https://github.com/filedna/filedna/issues)
+**FileDNA** · [PyPI](https://pypi.org/project/filedna/) · [Issues](https://github.com/Ritik-Mittal/filedna/issues)
 
 *If FileDNA saved you from writing boilerplate, consider giving it a ⭐*
 
